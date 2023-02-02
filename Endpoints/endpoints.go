@@ -16,7 +16,7 @@ func main() {
 	e.GET("/user/URL/getURLs", getURLs)
 	e.GET("/user/URL/URLstatistics", statURL)
 	e.GET("/user/warning/:id", wanrURL)
-
+	e.Logger.Fatal(e.Start(":8080"))
 }
 
 func signup(c echo.Context) error {
