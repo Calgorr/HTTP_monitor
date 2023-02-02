@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	authentication "github.com/Calgorr/IE_Backend_Fall/Authentication"
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,10 +13,10 @@ func main() {
 	e := echo.New()
 	e.POST("/signup", signup)
 	e.POST("/login", login)
-	e.POST("/newURL", newURL)
-	e.GET("/user/URL/getURLs", getURLs)
-	e.GET("/user/URL/URLstatistics", statURL)
-	e.GET("/user/warning/:id", wanrURL)
+	e.POST("/newURL", newURL, authentication.VerifyToken)
+	e.GET("/user/URL/getURLs", getURLs, authentication.VerifyToken)
+	e.GET("/user/URL/URLstatistics", statURL, authentication.VerifyToken)
+	e.GET("/user/warning/:id", wanrURL, authentication.VerifyToken)
 	e.Logger.Fatal(e.Start(":8080"))
 }
 
@@ -39,41 +40,32 @@ func login(c echo.Context) error {
 	}
 	username := userPass["username"]
 	password := userPass["password"]
-	token := "mooz"
+	token, err := authentication.GenerateJWT()
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Something went wrong")
+	}
 	c.Response().Header().Set("Authorization", token)
 	fmt.Println(username, password) //update
 	return c.String(http.StatusOK, "Logged in")
 }
 
 func newURL(c echo.Context) error {
-	if err := authenticate(c); err != nil {
-		return c.String(http.StatusForbidden, "not Authenticated")
-	}
 	URL := c.FormValue("URL")
 	fmt.Println(URL) //update
 	return c.String(http.StatusOK, "URL added")
 }
 func getURLs(c echo.Context) error {
-	if err := authenticate(c); err != nil {
-		return c.String(http.StatusForbidden, "not Authenticated")
-	}
 	urls := make([]string, 20)
 	fmt.Println(urls) //update
 	return c.JSONPretty(http.StatusOK, urls, " ")
 }
 
 func statURL(c echo.Context) error {
-	if err := authenticate(c); err != nil {
-		return c.String(http.StatusForbidden, "not Authenticated")
-	}
 	x := 0                                     //update
 	return c.JSONPretty(http.StatusOK, x, " ") //update
 }
 
 func wanrURL(c echo.Context) error {
-	if err := authenticate(c); err != nil {
-		return c.String(http.StatusForbidden, "not Authenticated")
-	}
 	warning := "warning" //update
 	return c.JSON(http.StatusOK, warning)
 }
