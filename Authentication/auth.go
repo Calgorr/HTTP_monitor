@@ -13,7 +13,7 @@ var secretKey = []byte("calgor")
 func GenerateJWT() (string, error) {
 	token := jwt.New(jwt.SigningMethodEdDSA)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["exp"] = time.Now().Add(time.Hour * 72)
+	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
 		return "", err
