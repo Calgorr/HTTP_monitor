@@ -47,10 +47,28 @@ func AddUser(user *model.User) error {
 func GetUserByUsername(username string) (*model.User, error) {
 	sqlStatement := "SELECT username, password FROM users WHERE username=$1 "
 	row := db.QueryRow(sqlStatement, username)
-	if row.Scan() == sql.ErrNoRows {
+	user := new(model.User)
+	err := row.Scan(&user.Username, &user.Password)
+	if err == sql.ErrNoRows {
 		return nil, errors.New("User does not exists")
 	}
-	user := new(model.User)
-	row.Scan(&user.Username, user.Password)
 	return user, nil
+}
+
+func AddURL(url *model.URL) error {
+	sqlStatement := "INSERT INTO url (created_at,user_id,address,threshold,failed_times) VALUES ($1,$2,$3,$4,$5)"
+	_, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes)
+	return err
+}
+
+func GetURLByUser(user_id int) (*model.URL, error) {
+	sqlStatement := "SELECT user_id, address, threshold, failed_times FROM url WHERE user_id=$1"
+	row := db.QueryRow(sqlStatement, user_id)
+	url := new(model.URL)
+	err := row.Scan(url.UserID, url.Address, url.Threshold, url.FailedTimes)
+	if err == sql.ErrNoRows {
+		return nil, err
+	}
+	return url, nil
+
 }

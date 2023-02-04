@@ -10,9 +10,10 @@ import (
 
 var secretKey = []byte("calgor")
 
-func GenerateJWT() (string, error) {
+func GenerateJWT(id int) (string, error) {
 	token := jwt.New(jwt.SigningMethodEdDSA)
 	claims := token.Claims.(jwt.MapClaims)
+	claims["user_id"] = id
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
 	tokenString, err := token.SignedString(secretKey)
 	if err != nil {
