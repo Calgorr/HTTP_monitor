@@ -61,14 +61,25 @@ func AddURL(url *model.URL) error {
 	return err
 }
 
-func GetURLByUser(user_id int) (*model.URL, error) {
+func GetURLByUser(user_id int) ([]*model.URL, error) {
+	urls := make([]*model.URL, 20)
 	sqlStatement := "SELECT user_id, address, threshold, failed_times FROM url WHERE user_id=$1"
-	row := db.QueryRow(sqlStatement, user_id)
-	url := new(model.URL)
-	err := row.Scan(url.UserID, url.Address, url.Threshold, url.FailedTimes)
-	if err == sql.ErrNoRows {
-		return nil, err
+	rows, err := db.Query(sqlStatement, user_id)
+	if err != nil {
+		panic(err)
 	}
-	return url, nil
-
+	defer rows.Close()
+	for rows.Next() {
+		url := new(model.URL)
+		err = rows.Scan(&url.UserID, &url.Address, &url.Threshold, &url.FailedTimes)
+		if err != nil {
+			panic(err)
+		}
+		urls = append(urls, url)
+	}
+	err = rows.Err()
+	if err != nil {
+		panic(err)
+	}
+	return urls, nil
 }
