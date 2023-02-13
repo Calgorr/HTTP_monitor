@@ -9,25 +9,15 @@ import (
 	"github.com/Calgorr/IE_Backend_Fall/database"
 )
 
-type Result struct {
-	httpStatusCode int
-	description    string
-	url            *model.URL
-}
 
 func sendHTTPResp(url *model.URL) *Result {
 
 	resp, err := http.Get(url.Address)
-	result := &Result{}
-	if resp.StatusCode/100 != 2 {
-		result.httpStatusCode = 0
-		result.description = err.Error()
-		result.url = url
-	} else {
-		result.httpStatusCode = resp.StatusCode
-		result.description = ""
-		result.url = url
-	}
+	result := &model.Request{}
+	result.StatusCode=resp.StatusCode
+	result.URLID=url.URLID
+	//some errors are not still covered
+	database.AddRequest(*result)
 	return result
 }
 
@@ -53,8 +43,10 @@ func DoEveryPeriod(d time.Duration) {
 			for res := range results {
 				if res.httpStatusCode/100 != 2 && strings.Compare(res.description, "") == 0 {
 					database.IncrementFailedByOne(res.url)
-				}
-				else if
+					if database.ThresholdReached(res.url){
+						
+					}
+				} else if
 			}
 
 		}

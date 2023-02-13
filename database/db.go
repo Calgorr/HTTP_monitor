@@ -125,3 +125,26 @@ func AddRequest(request model.Request) error {
 	return err
 
 }
+
+func SetWarning(url model.URL) error {
+	connect()
+	defer db.Close()
+	sqlstatement := "UPDATE warning FROM url warning=1 WHERE url_id=$1"
+	_, err := db.Exec(sqlstatement, url.URLID)
+	return err
+}
+
+func ThresholdReached(url model.URL) bool {
+	connect()
+	defer db.Close()
+	sqlstatement := "SELECT threshold, failed_times FROM url WHERE url_id=$1"
+	row := db.QueryRow(sqlstatement, url.URLID)
+	var threshold, failed_times int
+	err := row.Scan(threshold, failed_times)
+	if err == sql.ErrNoRows {
+		panic("url does not exists")
+	} else if failed_times > threshold {
+		return false
+	}
+	return true
+}
