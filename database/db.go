@@ -116,3 +116,12 @@ func IncrementFailedByOne(url *model.URL) error {
 	_, err := db.Exec(sqlstatement, url.URLID)
 	return err
 }
+
+func AddRequest(request model.Request) error {
+	connect()
+	defer db.Close()
+	sqlstatement := "INSERT INTO request (created_at,url_id,result) VALUES($1,$2$3)"
+	_, err := db.Exec(sqlstatement, time.Now().Unix(), request.URLID, request.StatusCode)
+	return err
+
+}
