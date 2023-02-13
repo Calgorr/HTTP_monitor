@@ -35,14 +35,14 @@ func Worker(jobs <-chan model.URL, results chan<- Result) {
 func DoEveryPeriod(d time.Duration) {
 	jobs, results := make(chan model.URL, 100), make(chan Result, 100)
 	ticker := time.NewTicker(d)
-	go func() {
-		for {
-			select {
-			case <-ticker.C:
-				for i := 0; i < 100; i++ {
-					go Worker(jobs, results)
-				}
+	for {
+		select {
+		case <-ticker.C:
+			for i := 0; i < 100; i++ {
+				go Worker(jobs, results)
 			}
+			//need to get all the urls send them to the jobs chanel and then get the results andd update the database
+
 		}
-	}()
+	}
 }
