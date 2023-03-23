@@ -43,7 +43,7 @@ func DoEveryPeriod(d time.Duration) {
 			for res := range results {
 				if res.httpStatusCode/100 != 2 && strings.Compare(res.description, "") == 0 {
 					database.IncrementFailedByOne(res.url)
-					if database.ThresholdReached(res.url){
+					if !database.ThresholdReached(res.url){
 						
 					}
 				} else if
