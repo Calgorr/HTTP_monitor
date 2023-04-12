@@ -10,7 +10,7 @@ require (
 )
 
 require (
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/golang-jwt/jwt v3.2.2+incompatible 
 	golang.org/x/time v0.3.0 // indirect
 )
 

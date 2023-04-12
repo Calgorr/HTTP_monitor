@@ -38,6 +38,7 @@ func connect() {
 }
 
 func AddUser(user *model.User) error {
+	fmt.Println(user, "moz")
 	connect()
 	defer db.Close()
 	sqlStatement := "INSERT INTO users (created_at,username,password) VALUES ($1,$2,$3)"
@@ -61,7 +62,9 @@ func AddURL(url *model.URL) error {
 	connect()
 	defer db.Close()
 	sqlStatement := "INSERT INTO url (created_at,user_id,address,threshold,failed_times,warning) VALUES ($1,$2,$3,$4,$5,$6)"
-	_, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes, 0)
+	rs, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes, 0)
+	id, _ := rs.LastInsertId()
+	url.ID = int(id)
 	return err
 }
 
@@ -88,6 +91,19 @@ func GetURLByUser(user_id int) ([]*model.URL, error) {
 		panic(err)
 	}
 	return urls, nil
+}
+
+func GetIDByUsername(username string) (int, error) {
+	connect()
+	defer db.Close()
+	sqlStatement := "SELECT userid FROM users WHERE username=$1"
+	row := db.QueryRow(sqlStatement, username)
+	var id int
+	err := row.Scan(&id)
+	if err != nil {
+		return 0, err
+	}
+	return id, nil
 }
 
 func GetAllURLs() []*model.URL {

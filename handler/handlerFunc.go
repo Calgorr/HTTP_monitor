@@ -13,6 +13,7 @@ import (
 func (h *Handler) Signup(c echo.Context) error {
 	newUser, err := new(model.User).Bind(c)
 	if err != nil {
+		fmt.Println(err)
 		c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	err = database.AddUser(newUser)
@@ -22,24 +23,37 @@ func (h *Handler) Signup(c echo.Context) error {
 func (h *Handler) Login(c echo.Context) error {
 	user, err := new(model.User).Bind(c)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Something went wrong")
+		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	u, err := database.GetUserByUsername(user.Username)
 	if err != nil || u.Password != user.Password {
-		c.String(http.StatusUnauthorized, "Wrong username or password")
+		return c.String(http.StatusUnauthorized, "Wrong username or password")
 	}
-	token, err := authentication.GenerateJWT()
+	id, err := database.GetIDByUsername(user.Username)
 	if err != nil {
-		c.String(http.StatusInternalServerError, "Something went wrong")
+		fmt.Println(err)
+		return c.String(http.StatusInternalServerError, "Something went wrong")
+	}
+	token, err := authentication.GenerateJWT(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	c.Response().Header().Set("Authorization", token)
-	user.Token = token
 	return c.String(http.StatusOK, "Logged in")
 }
 
 func (h *Handler) NewURL(c echo.Context) error {
-	URL := c.FormValue("URL")
-	fmt.Println(URL) //update
+	fmt.Println("sjvnsdkvnsdkvnmoz______________________---234123")
+	newURL, err := new(model.URL).Bind(c)
+	if err != nil {
+		c.String(http.StatusBadRequest, "Something went wrong")
+	}
+	newURL.UserID = int(extractID(c))
+	err = database.AddURL(newURL)
+	if err != nil {
+		c.String(http.StatusInternalServerError, "Something went wrong")
+	}
+	fmt.Println(newURL)
 	return c.String(http.StatusOK, "URL added")
 }
 func (h *Handler) GetURLs(c echo.Context) error {
@@ -58,13 +72,8 @@ func (h *Handler) WanrURL(c echo.Context) error {
 	return c.JSON(http.StatusOK, warning)
 }
 
-func (h *Handler) Authenticate(c echo.Context) error {
-	token := c.Request().Header.Get("Authorization")
-	fmt.Println(token) //update
-	return nil
-}
-
 func (h *Handler) GetAlerts(c echo.Context) error {
+	fmt.Println("moz")
 	token := c.Request().Header.Get("Authorization")
 	fmt.Println(token) //update
 	return nil
