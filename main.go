@@ -2,7 +2,7 @@ package main
 
 import (
 	authentication "github.com/Calgorr/IE_Backend_Fall/Authentication"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 func main() {

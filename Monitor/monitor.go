@@ -9,13 +9,12 @@ import (
 	"github.com/Calgorr/IE_Backend_Fall/database"
 )
 
-
 func sendHTTPResp(url *model.URL) *Result {
 
-	resp, err := http.Get(url.Address)
+	resp, _ := http.Get(url.Address)
 	result := &model.Request{}
-	result.StatusCode=resp.StatusCode
-	result.URLID=url.URLID
+	result.StatusCode = resp.StatusCode
+	result.URLID = url.URLID
 	//some errors are not still covered
 	database.AddRequest(*result)
 	return result
@@ -43,10 +42,12 @@ func DoEveryPeriod(d time.Duration) {
 			for res := range results {
 				if res.httpStatusCode/100 != 2 && strings.Compare(res.description, "") == 0 {
 					database.IncrementFailedByOne(res.url)
-					if !database.ThresholdReached(res.url){
-						
+					if !database.ThresholdReached(res.url) {
+
 					}
-				} else if
+				} else if true {
+
+				}
 			}
 
 		}
