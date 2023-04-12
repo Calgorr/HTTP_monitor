@@ -3,8 +3,9 @@ package model
 import "errors"
 
 type User struct {
-	Username, Password string
-	URLs               []URL
+	Username string `Form:"username" json:"username"`
+	Password string `Form:"password" json:"password"`
+	URLs     []URL
 }
 
 func NewUser(username, password string) (*User, error) {

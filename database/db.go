@@ -113,7 +113,7 @@ func IncrementFailedByOne(url *model.URL) error {
 	connect()
 	defer db.Close()
 	sqlstatement := "UPDATE failed_times FROM url SET failed_times=failed_times+1 WHERE url_id=$1"
-	_, err := db.Exec(sqlstatement, url.URLID)
+	_, err := db.Exec(sqlstatement, url.ID)
 	return err
 }
 
@@ -130,7 +130,7 @@ func SetWarning(url model.URL) error {
 	connect()
 	defer db.Close()
 	sqlstatement := "UPDATE warning FROM url warning=1 WHERE url_id=$1"
-	_, err := db.Exec(sqlstatement, url.URLID)
+	_, err := db.Exec(sqlstatement, url.ID)
 	return err
 }
 
@@ -138,7 +138,7 @@ func ThresholdReached(url model.URL) bool {
 	connect()
 	defer db.Close()
 	sqlstatement := "SELECT threshold, failed_times FROM url WHERE url_id=$1"
-	row := db.QueryRow(sqlstatement, url.URLID)
+	row := db.QueryRow(sqlstatement, url.ID)
 	var threshold, failed_times int
 	err := row.Scan(threshold, failed_times)
 	if err == sql.ErrNoRows {
