@@ -25,7 +25,6 @@ func (h *Handler) Login(c echo.Context) error {
 		c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	u, err := database.GetUserByUsername(user.Username)
-	fmt.Println(user, u)
 	if err != nil || u.Password != user.Password {
 		c.String(http.StatusUnauthorized, "Wrong username or password")
 	}
@@ -34,6 +33,7 @@ func (h *Handler) Login(c echo.Context) error {
 		c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	c.Response().Header().Set("Authorization", token)
+	user.Token = token
 	return c.String(http.StatusOK, "Logged in")
 }
 

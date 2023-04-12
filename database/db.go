@@ -40,7 +40,6 @@ func connect() {
 func AddUser(user *model.User) error {
 	connect()
 	defer db.Close()
-	fmt.Println(db.Ping())
 	sqlStatement := "INSERT INTO users (created_at,username,password) VALUES ($1,$2,$3)"
 	_, err := db.Exec(sqlStatement, time.Now(), user.Username, user.Password)
 	return err
