@@ -8,12 +8,12 @@ import (
 type Handler struct {
 }
 
-func extractID(c echo.Context) uint {
+func extractID(c echo.Context) int {
 	token := c.Request().Header.Get("Authorization")
 	claims, err := authentication.ExtractClaimsFromToken(token)
 	if err != nil {
 		panic(err)
 	}
-	id := uint(claims["id"].(float64))
+	id := int(claims["id"].(float64))
 	return id
 }

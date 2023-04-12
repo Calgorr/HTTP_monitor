@@ -62,9 +62,11 @@ func AddURL(url *model.URL) error {
 	connect()
 	defer db.Close()
 	sqlStatement := "INSERT INTO url (created_at,user_id,address,threshold,failed_times,warning) VALUES ($1,$2,$3,$4,$5,$6)"
-	rs, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes, 0)
-	id, _ := rs.LastInsertId()
-	url.ID = int(id)
+	rs, err := db.Exec(sqlStatement, time.Now(), url.UserID, url.Address, url.Threshold, url.FailedTimes, 0)
+	if err != nil {
+		return err
+	}
+	url.ID, err = rs.LastInsertId()
 	return err
 }
 

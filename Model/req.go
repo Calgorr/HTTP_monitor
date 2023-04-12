@@ -3,7 +3,7 @@ package model
 import "github.com/labstack/echo/v4"
 
 type Request struct {
-	URLID, StatusCode int
+	URLID, StatusCode int64
 }
 
 func (u *Request) Bind(c echo.Context) (*Request, error) {

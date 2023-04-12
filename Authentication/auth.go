@@ -15,7 +15,7 @@ func GenerateJWT(id int) (string, error) {
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
 	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
-	// claims["userID"] = id
+	claims["id"] = id
 	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
@@ -44,7 +44,7 @@ func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func extractClaimsFromToken(tokenString string) (jwt.MapClaims, error) {
+func ExtractClaimsFromToken(tokenString string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		return []byte("calgor"), nil
 	})

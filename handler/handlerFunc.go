@@ -43,7 +43,6 @@ func (h *Handler) Login(c echo.Context) error {
 }
 
 func (h *Handler) NewURL(c echo.Context) error {
-	fmt.Println("sjvnsdkvnsdkvnmoz______________________---234123")
 	newURL, err := new(model.URL).Bind(c)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Something went wrong")
@@ -51,6 +50,7 @@ func (h *Handler) NewURL(c echo.Context) error {
 	newURL.UserID = int(extractID(c))
 	err = database.AddURL(newURL)
 	if err != nil {
+		fmt.Println(err, "skdvsdkvn")
 		c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	fmt.Println(newURL)

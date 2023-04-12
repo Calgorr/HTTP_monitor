@@ -9,7 +9,7 @@ import (
 )
 
 type URL struct {
-	ID          int
+	ID          int64
 	UserID      int    `form:"userID" json:"userID"`
 	Address     string `form:"address" json:"address"`
 	Threshold   int    `form:"threshold" json:"threshold"`
@@ -45,7 +45,7 @@ func (u *URL) SendRequest() (*Request, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.StatusCode = resp.StatusCode
+	req.StatusCode = int64(resp.StatusCode)
 	return req, nil
 }
 
