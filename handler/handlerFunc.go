@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"encoding/json"
@@ -9,7 +9,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func signup(c echo.Context) error {
+func (h *Handler) signup(c echo.Context) error {
 	userPass := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&userPass)
 	if err != nil {
@@ -21,7 +21,7 @@ func signup(c echo.Context) error {
 	return c.String(http.StatusOK, "Registration done")
 }
 
-func login(c echo.Context) error {
+func (h *Handler) login(c echo.Context) error {
 	userPass := make(map[string]interface{})
 	err := json.NewDecoder(c.Request().Body).Decode(&userPass)
 	if err != nil {
@@ -38,28 +38,28 @@ func login(c echo.Context) error {
 	return c.String(http.StatusOK, "Logged in")
 }
 
-func newURL(c echo.Context) error {
+func (h *Handler) newURL(c echo.Context) error {
 	URL := c.FormValue("URL")
 	fmt.Println(URL) //update
 	return c.String(http.StatusOK, "URL added")
 }
-func getURLs(c echo.Context) error {
+func (h *Handler) getURLs(c echo.Context) error {
 	urls := make([]string, 20)
 	fmt.Println(urls) //update
 	return c.JSONPretty(http.StatusOK, urls, " ")
 }
 
-func statURL(c echo.Context) error {
+func (h *Handler) statURL(c echo.Context) error {
 	x := 0                                     //update
 	return c.JSONPretty(http.StatusOK, x, " ") //update
 }
 
-func wanrURL(c echo.Context) error {
+func (h *Handler) wanrURL(c echo.Context) error {
 	warning := "warning" //update
 	return c.JSON(http.StatusOK, warning)
 }
 
-func authenticate(c echo.Context) error {
+func (h *Handler) authenticate(c echo.Context) error {
 	token := c.Request().Header.Get("Authorization")
 	fmt.Println(token) //update
 	return nil
