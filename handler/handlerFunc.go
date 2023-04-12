@@ -6,19 +6,18 @@ import (
 	"net/http"
 
 	authentication "github.com/Calgorr/IE_Backend_Fall/Authentication"
+	model "github.com/Calgorr/IE_Backend_Fall/Model"
+	"github.com/Calgorr/IE_Backend_Fall/database"
 	"github.com/labstack/echo/v4"
 )
 
 func (h *Handler) Signup(c echo.Context) error {
-	userPass := make(map[string]interface{})
-	err := json.NewDecoder(c.Request().Body).Decode(&userPass)
+	newUser, err := new(model.User).Bind(c)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Something went wrong")
 	}
-	username := userPass["username"]
-	password := userPass["password"]
-	fmt.Println(username, password) //update
-	return c.String(http.StatusOK, "Registration done")
+	database.AddUser(newUser)
+	return c.String(http.StatusOK, "Signed up")
 }
 
 func (h *Handler) Login(c echo.Context) error {
