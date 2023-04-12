@@ -66,5 +66,7 @@ func (h *Handler) Authenticate(c echo.Context) error {
 }
 
 func (h *Handler) GetAlerts(c echo.Context) error {
-
+	token := c.Request().Header.Get("Authorization")
+	fmt.Println(token) //update
+	return nil
 }

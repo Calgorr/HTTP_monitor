@@ -1,46 +1,48 @@
 package authentication
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
-	"github.com/labstack/echo/v4"
+	echo "github.com/labstack/echo/v4"
 )
 
 var secretKey = []byte("calgor")
 
-func GenerateJWT(id int) (string, error) {
-	token := jwt.New(jwt.SigningMethodEdDSA)
+const secret = "calgor"
+
+func GenerateJWT() (string, error) {
+	token := jwt.New(jwt.SigningMethodHS256)
 	claims := token.Claims.(jwt.MapClaims)
-	claims["user_id"] = id
-	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	tokenString, err := token.SignedString(secretKey)
+	claims["exp"] = time.Now().Add(24 * time.Hour).Unix()
+	claims["authorized"] = true
+	claims["user"] = "username"
+	tokenString, err := token.SignedString([]byte(secret))
 	if err != nil {
 		return "", err
 	}
-	return tokenString, err
+
+	return tokenString, nil
 }
 
-func VerifyToken(next echo.HandlerFunc) echo.HandlerFunc {
+func ValidateJWT(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-
-		if c.Request().Header.Get("Authorization") != "" {
-			token, err := jwt.Parse(c.Request().Header.Get("Authorization"), func(token *jwt.Token) (interface{}, error) {
-				_, ok := token.Method.(*jwt.SigningMethodECDSA)
-				if !ok {
-					c.String(http.StatusUnauthorized, "You're Unauthorized!")
-				}
-				return "", nil
-
-			})
-			if err != nil {
-				c.String(http.StatusUnauthorized, "You're Unauthorized!")
+		auth := c.Request().Header.Get("Authorization")
+		token, err := jwt.Parse(auth, func(token *jwt.Token) (interface{}, error) {
+			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+				return nil, fmt.Errorf("there was an error")
 			}
-			if token.Valid {
-				next(c)
-			}
+			return []byte(secret), nil
+		})
+		if err != nil {
+			fmt.Println(err, token)
+			return c.String(http.StatusUnauthorized, "unauthorized")
 		}
-		return c.String(http.StatusUnauthorized, "You're Unauthorized due to No token in the header")
+		if token.Valid {
+			return next(c)
+		}
+		return c.String(http.StatusUnauthorized, "unauthorized")
 	}
 }
