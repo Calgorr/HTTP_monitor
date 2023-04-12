@@ -10,10 +10,10 @@ import (
 
 type URL struct {
 	ID          int
-	UserID      int    `Form:"userID" json:"userID"`
-	Address     string `Form:"address" json:"address"`
-	Threshold   int    `Form:"threshold" json:"threshold"`
-	FailedTimes int    `Form:"failedTimes" json:"failedTimes"`
+	UserID      int    `form:"userID" json:"userID"`
+	Address     string `form:"address" json:"address"`
+	Threshold   int    `form:"threshold" json:"threshold"`
+	FailedTimes int    `form:"failedTimes" json:"failedTimes"`
 	Requests    []Request
 }
 

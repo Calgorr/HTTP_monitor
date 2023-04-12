@@ -60,8 +60,8 @@ func GetUserByUsername(username string) (*model.User, error) {
 func AddURL(url *model.URL) error {
 	connect()
 	defer db.Close()
-	sqlStatement := "INSERT INTO url (created_at,user_id,address,threshold,failed_times) VALUES ($1,$2,$3,$4,$5)"
-	_, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes)
+	sqlStatement := "INSERT INTO url (created_at,user_id,address,threshold,failed_times,warning) VALUES ($1,$2,$3,$4,$5,$6)"
+	_, err := db.Exec(sqlStatement, time.Now().Unix(), url.UserID, url.Address, url.Threshold, url.FailedTimes, 0)
 	return err
 }
 
