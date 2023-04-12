@@ -6,8 +6,11 @@ import (
 )
 
 type URL struct {
-	URLID, UserID, Threshold, FailedTimes int
-	Address                               string
+	UserID      int
+	Address     string
+	Threshold   int
+	FailedTimes int
+	Requests    []Request
 }
 
 func NewURL(userID, threshold, failedTimes int, address string) (*URL, error) {
