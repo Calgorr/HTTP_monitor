@@ -7,6 +7,7 @@ import (
 	"time"
 
 	model "github.com/Calgorr/IE_Backend_Fall/Model"
+	_ "github.com/lib/pq"
 )
 
 const (
@@ -30,10 +31,7 @@ func connect() {
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
-
 	err := db.Ping()
-
 	if err != nil {
 		panic(err)
 	}
@@ -42,8 +40,9 @@ func connect() {
 func AddUser(user *model.User) error {
 	connect()
 	defer db.Close()
+	fmt.Println(db.Ping())
 	sqlStatement := "INSERT INTO users (created_at,username,password) VALUES ($1,$2,$3)"
-	_, err := db.Exec(sqlStatement, time.Now().Unix(), user.Username, user.Password)
+	_, err := db.Exec(sqlStatement, time.Now(), user.Username, user.Password)
 	return err
 }
 func GetUserByUsername(username string) (*model.User, error) {

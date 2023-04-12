@@ -7,8 +7,8 @@ import (
 )
 
 type User struct {
-	Username string `Form:"username" json:"username"`
-	Password string `Form:"password" json:"password"`
+	Username string `form:"username" json:"username"`
+	Password string `form:"password" json:"password"`
 	URLs     []URL
 }
 

@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -16,24 +15,25 @@ func (h *Handler) Signup(c echo.Context) error {
 	if err != nil {
 		c.String(http.StatusBadRequest, "Something went wrong")
 	}
-	database.AddUser(newUser)
+	err = database.AddUser(newUser)
 	return c.String(http.StatusOK, "Signed up")
 }
 
 func (h *Handler) Login(c echo.Context) error {
-	userPass := make(map[string]interface{})
-	err := json.NewDecoder(c.Request().Body).Decode(&userPass)
+	user, err := new(model.User).Bind(c)
 	if err != nil {
 		c.String(http.StatusBadRequest, "Something went wrong")
 	}
-	username := userPass["username"]
-	password := userPass["password"]
+	u, err := database.GetUserByUsername(user.Username)
+	fmt.Println(user, u)
+	if err != nil || u.Password != user.Password {
+		c.String(http.StatusUnauthorized, "Wrong username or password")
+	}
 	token, err := authentication.GenerateJWT()
 	if err != nil {
 		c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	c.Response().Header().Set("Authorization", token)
-	fmt.Println(username, password) //update
 	return c.String(http.StatusOK, "Logged in")
 }
 
