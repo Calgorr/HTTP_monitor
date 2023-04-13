@@ -100,11 +100,8 @@ func GetURLByID(id int) (*model.URL, error) {
 	connect()
 	defer db.Close()
 	sqlStatement := "SELECT id,user_id, address, treshold, failed_times FROM urls WHERE id=$1"
-	row := db.QueryRow(sqlStatement, id).Scan(&url.ID, &url.UserID, &url.Address, &url.Treshold, &url.FailedTimes)
-	if row.Error() != "" {
-		return nil, errors.New(row.Error())
-	}
-	return url, nil
+	err := db.QueryRow(sqlStatement, id).Scan(&url.ID, &url.UserID, &url.Address, &url.Treshold, &url.FailedTimes)
+	return url, err
 }
 
 func GetIDByUsername(username string) (int, error) {

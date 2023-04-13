@@ -17,7 +17,7 @@ func (h *Handler) RegisterRoutes(v echo.Group) {
 	urlGroup.Use(authentication.ValidateJWT)
 	urlGroup.GET("", h.GetURLs)
 	urlGroup.POST("", h.NewURL)
-	urlGroup.GET(":id", h.StatURL)
+	urlGroup.GET("/:id", h.StatURL)
 
 	alertGroup := v.Group("/alerts")
 	alertGroup.Use(authentication.ValidateJWT)
