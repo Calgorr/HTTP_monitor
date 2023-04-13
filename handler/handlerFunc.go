@@ -14,7 +14,7 @@ func (h *Handler) Signup(c echo.Context) error {
 	newUser, err := new(model.User).Bind(c)
 	if err != nil {
 		fmt.Println(err)
-		c.String(http.StatusBadRequest, "Something went wrong")
+		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	err = database.AddUser(newUser)
 	return c.String(http.StatusOK, "Signed up")
@@ -45,13 +45,13 @@ func (h *Handler) Login(c echo.Context) error {
 func (h *Handler) NewURL(c echo.Context) error {
 	newURL, err := new(model.URL).Bind(c)
 	if err != nil {
-		c.String(http.StatusBadRequest, "Something went wrong")
+		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	newURL.UserID = int(extractID(c))
 	err = database.AddURL(newURL)
 	if err != nil {
 		fmt.Println(err, "skdvsdkvn")
-		c.String(http.StatusInternalServerError, "Something went wrong")
+		return c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	fmt.Println(newURL)
 	return c.String(http.StatusOK, "URL added")
