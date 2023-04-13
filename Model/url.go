@@ -12,15 +12,15 @@ type URL struct {
 	ID          int64
 	UserID      int    `form:"userID" json:"userID"`
 	Address     string `form:"address" json:"address"`
-	Threshold   int    `form:"threshold" json:"threshold"`
+	Treshold    int    `form:"treshold" json:"treshold"`
 	FailedTimes int    `form:"failedTimes" json:"failedTimes"`
 	Requests    []Request
 }
 
-func NewURL(userID, threshold, failedTimes int, address string) (*URL, error) {
+func NewURL(userID, treshold, failedTimes int, address string) (*URL, error) {
 	url := new(URL)
 	url.UserID = userID
-	url.Threshold = threshold
+	url.Treshold = treshold
 	url.FailedTimes = 0
 	if !strings.HasPrefix(address, "http://") {
 		address = "http://" + address
@@ -35,7 +35,7 @@ func NewURL(userID, threshold, failedTimes int, address string) (*URL, error) {
 }
 
 func (u *URL) AlarmTrigger() bool {
-	return u.FailedTimes >= u.Threshold
+	return u.FailedTimes >= u.Treshold
 }
 
 func (u *URL) SendRequest() (*Request, error) {

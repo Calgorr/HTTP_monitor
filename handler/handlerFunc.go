@@ -48,9 +48,10 @@ func (h *Handler) NewURL(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	newURL.UserID = int(extractID(c))
+	fmt.Println(newURL.Treshold)
 	err = database.AddURL(newURL)
 	if err != nil {
-		fmt.Println(err, "skdvsdkvn")
+		fmt.Println(err)
 		return c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	fmt.Println(newURL)
