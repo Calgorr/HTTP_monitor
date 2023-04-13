@@ -48,18 +48,18 @@ func (h *Handler) NewURL(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
 	newURL.UserID = int(extractID(c))
-	fmt.Println(newURL.Treshold)
 	err = database.AddURL(newURL)
 	if err != nil {
-		fmt.Println(err)
 		return c.String(http.StatusInternalServerError, "Something went wrong")
 	}
 	fmt.Println(newURL)
 	return c.String(http.StatusOK, "URL added")
 }
 func (h *Handler) GetURLs(c echo.Context) error {
-	urls := make([]string, 20)
-	fmt.Println(urls) //update
+	urls, err := database.GetURLByUser(int(extractID(c)))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Something went wrong")
+	}
 	return c.JSONPretty(http.StatusOK, urls, " ")
 }
 

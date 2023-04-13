@@ -62,8 +62,10 @@ func AddURL(url *model.URL) error {
 	connect()
 	defer db.Close()
 	var lsInsertID int
+	//TODO fix the id problemm
 	sqlStatement := "INSERT INTO urls (created_at,user_id,address,treshold,failed_times,warning) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id"
 	err := db.QueryRow(sqlStatement, time.Now(), url.UserID, url.Address, url.Treshold, url.FailedTimes, 0).Scan(&lsInsertID)
+	url.ID = int64(lsInsertID)
 	if err != nil {
 		return err
 	}
@@ -74,7 +76,7 @@ func GetURLByUser(user_id int) ([]*model.URL, error) {
 	connect()
 	defer db.Close()
 	urls := make([]*model.URL, 20)
-	sqlStatement := "SELECT user_id, address, treshold, failed_times FROM urls WHERE user_id=$1"
+	sqlStatement := "SELECT id,user_id, address, treshold, failed_times FROM urls WHERE user_id=$1"
 	rows, err := db.Query(sqlStatement, user_id)
 	if err != nil {
 		panic(err)
@@ -82,7 +84,7 @@ func GetURLByUser(user_id int) ([]*model.URL, error) {
 	defer rows.Close()
 	for rows.Next() {
 		url := new(model.URL)
-		err = rows.Scan(&url.UserID, &url.Address, &url.Treshold, &url.FailedTimes)
+		err = rows.Scan(&url.ID, &url.UserID, &url.Address, &url.Treshold, &url.FailedTimes)
 		if err != nil {
 			panic(err)
 		}
