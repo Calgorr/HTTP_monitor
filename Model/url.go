@@ -1,6 +1,7 @@
 package model
 
 import (
+	"errors"
 	"net/http"
 	_url "net/url"
 	"strings"
@@ -53,5 +54,13 @@ func (u *URL) Bind(c echo.Context) (*URL, error) {
 	if err := c.Bind(u); err != nil {
 		return nil, err
 	}
-	return u, nil
+	if !strings.HasPrefix(u.Address, "http://") {
+		u.Address = "http://" + u.Address
+	}
+	_, isValid := _url.ParseRequestURI(u.Address)
+
+	if isValid == nil {
+		return u, nil
+	}
+	return nil, errors.New("URL is not valid")
 }
