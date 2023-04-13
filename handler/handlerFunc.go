@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	authentication "github.com/Calgorr/IE_Backend_Fall/Authentication"
 	model "github.com/Calgorr/IE_Backend_Fall/Model"
@@ -64,13 +65,7 @@ func (h *Handler) GetURLs(c echo.Context) error {
 }
 
 func (h *Handler) StatURL(c echo.Context) error {
-	x := 0                                     //update
-	return c.JSONPretty(http.StatusOK, x, " ") //update
-}
-
-func (h *Handler) WanrURL(c echo.Context) error {
-	warning := "warning" //update
-	return c.JSON(http.StatusOK, warning)
+	id := strconv.Atoi(c.Param("id"))
 }
 
 func (h *Handler) GetAlerts(c echo.Context) error {
