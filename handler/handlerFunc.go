@@ -65,7 +65,15 @@ func (h *Handler) GetURLs(c echo.Context) error {
 }
 
 func (h *Handler) StatURL(c echo.Context) error {
-	id := strconv.Atoi(c.Param("id"))
+	id, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Something went wrong")
+	}
+	url, err := database.GetURLByID(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Something went wrong")
+	}
+	return c.String(http.StatusOK, "Failed times :"+strconv.Itoa(url.FailedTimes))
 }
 
 func (h *Handler) GetAlerts(c echo.Context) error {
