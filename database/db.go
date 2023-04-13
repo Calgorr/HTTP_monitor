@@ -62,7 +62,6 @@ func AddURL(url *model.URL) error {
 	connect()
 	defer db.Close()
 	var lsInsertID int
-	//TODO fix the id problemm
 	sqlStatement := "INSERT INTO urls (created_at,user_id,address,treshold,failed_times,warning) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id"
 	err := db.QueryRow(sqlStatement, time.Now(), url.UserID, url.Address, url.Treshold, url.FailedTimes, 0).Scan(&lsInsertID)
 	url.ID = int64(lsInsertID)
