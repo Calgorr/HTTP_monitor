@@ -78,5 +78,9 @@ func (h *Handler) StatURL(c echo.Context) error {
 
 func (h *Handler) GetAlerts(c echo.Context) error {
 	id := extractID(c)
-
+	alerts, err := database.GetAlertsByUserID(id)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Something went wrong")
+	}
+	return c.JSONPretty(http.StatusOK, alerts, " ")
 }
