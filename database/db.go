@@ -133,6 +133,25 @@ func GetAllURLs() []*model.URL {
 	}
 	return urls
 }
+func GetAlertsByUserID(ID int) ([]*model.URL, error) {
+	var urls []*model.URL
+	connect()
+	defer db.Close()
+	sqlstatement := "SELECT * FROM urls WHERE user_id=$1 AND warning=1"
+	rows, err := db.Query(sqlstatement, ID)
+	if err != nil {
+		return nil, err
+	}
+	for rows.Next() {
+		url := new(model.URL)
+		err = rows.Scan(&url.ID, url.UserID, url.Address, url.Treshold, url.FailedTimes)
+		if err != nil {
+			return nil, err
+		}
+		urls = append(urls, url)
+	}
+	return urls, nil
+}
 
 func IncrementFailedByOne(url *model.URL) error {
 	connect()

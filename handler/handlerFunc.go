@@ -57,7 +57,7 @@ func (h *Handler) NewURL(c echo.Context) error {
 	return c.String(http.StatusOK, "URL added")
 }
 func (h *Handler) GetURLs(c echo.Context) error {
-	urls, err := database.GetURLByUser(int(extractID(c)))
+	urls, err := database.GetURLByUser(extractID(c))
 	if err != nil {
 		return c.String(http.StatusBadRequest, "Something went wrong")
 	}
@@ -77,8 +77,6 @@ func (h *Handler) StatURL(c echo.Context) error {
 }
 
 func (h *Handler) GetAlerts(c echo.Context) error {
-	fmt.Println("moz")
-	token := c.Request().Header.Get("Authorization")
-	fmt.Println(token) //update
-	return nil
+	id := extractID(c)
+
 }
