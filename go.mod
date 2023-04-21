@@ -5,6 +5,8 @@ go 1.20
 require github.com/golang-jwt/jwt/v4 v4.4.3
 
 require (
+	github.com/gammazero/deque v0.2.0 // indirect
+	github.com/gammazero/workerpool v1.1.3 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	golang.org/x/time v0.3.0 // indirect
 )
