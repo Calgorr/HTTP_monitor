@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
-func (h *Handler) RegisterRoutes(v echo.Group) {
+func (h *Handler) RegisterRoutes(v *echo.Group) {
 	v.Use(middleware.Logger())
 
 	userGroup := v.Group("/users")
