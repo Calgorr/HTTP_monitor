@@ -39,7 +39,10 @@ func (mnt *Monitor) monitorURL(url *model.URL) {
 	if err := database.AddRequest(req); err != nil {
 		fmt.Println(err)
 	}
-	if err := database.IncrementFailedByOne(url); err != nil {
-		fmt.Println(err)
+	if req.StatusCode/100 != 2 {
+
+		if err := database.IncrementFailedByOne(url); err != nil {
+			fmt.Println(err)
+		}
 	}
 }
