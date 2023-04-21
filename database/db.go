@@ -117,21 +117,24 @@ func GetIDByUsername(username string) (int, error) {
 	return id, nil
 }
 
-func GetAllURLs() []*model.URL {
+func GetAllURLs() ([]*model.URL, error) {
 	connect()
 	defer db.Close()
 	urls := make([]*model.URL, 100)
 	sqlstatment := "SELECT * FROM urls"
 	rows, err := db.Query(sqlstatment)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	for rows.Next() {
 		url := new(model.URL)
-		rows.Scan(url.UserID, url.Address, url.Treshold, url.FailedTimes)
+		err := rows.Scan(url.UserID, url.Address, url.Treshold, url.FailedTimes)
+		if err != nil {
+			return nil, err
+		}
 		urls = append(urls, url)
 	}
-	return urls
+	return urls, nil
 }
 func GetAlertsByUserID(ID int) ([]*model.URL, error) {
 	var urls []*model.URL

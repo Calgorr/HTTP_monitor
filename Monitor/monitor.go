@@ -28,6 +28,16 @@ func NewMonitor(workerSize int) *Monitor {
 	return mnt
 }
 
+func (mnt *Monitor) LoadFromDatabase() error {
+	var urls []*model.URL
+	var err error
+	if urls, err = database.GetAllURLs(); err != nil {
+		return err
+	}
+	mnt.urls = urls
+	return nil
+}
+
 func (mnt *Monitor) monitorURL(url *model.URL) {
 	req, err := url.SendRequest()
 	if err != nil {
