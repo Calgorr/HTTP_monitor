@@ -38,6 +38,14 @@ func (mnt *Monitor) LoadFromDatabase() error {
 	return nil
 }
 
+func (mnt *Monitor) Do() {
+	for _, url := range mnt.urls {
+		mnt.wp.Submit(func() {
+			mnt.monitorURL(url)
+		})
+	}
+}
+
 func (mnt *Monitor) monitorURL(url *model.URL) {
 	req, err := url.SendRequest()
 	if err != nil {
