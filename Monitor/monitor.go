@@ -1,10 +1,11 @@
 package monitor
 
 import (
+	"fmt"
 	"net/http"
-	"net/url"
 
 	model "github.com/Calgorr/IE_Backend_Fall/Model"
+	"github.com/Calgorr/IE_Backend_Fall/database"
 	"github.com/gammazero/workerpool"
 )
 
@@ -27,15 +28,18 @@ func NewMonitor(workerSize int) *Monitor {
 	return mnt
 }
 
-func sendRequest(urlString string, client http.Client, result chan<- *Resp) {
-	var response *Resp
-	req := http.Request{}
-	req.URL, _ = url.Parse(urlString)
-	req.Method = "GET"
-	resp, err := client.Do(&req)
+func (mnt *Monitor) monitorURL(url *model.URL) {
+	req, err := url.SendRequest()
 	if err != nil {
-		response.StatusCode = 0
+		fmt.Println(err)
+		req = new(model.Request)
+		req.URLID = url.ID
+		req.StatusCode = http.StatusBadRequest
 	}
-	response.StatusCode = resp.StatusCode
-	result <- response
+	if err := database.AddRequest(req); err != nil {
+		fmt.Println(err)
+	}
+	if err := database.IncrementFailedByOne(url); err != nil {
+		fmt.Println(err)
+	}
 }

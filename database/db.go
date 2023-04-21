@@ -161,7 +161,7 @@ func IncrementFailedByOne(url *model.URL) error {
 	return err
 }
 
-func AddRequest(request model.Request) error {
+func AddRequest(request *model.Request) error {
 	connect()
 	defer db.Close()
 	sqlstatement := "INSERT INTO request (created_at,url_id,result) VALUES($1,$2$3)"
